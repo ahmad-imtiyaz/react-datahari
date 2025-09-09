@@ -1,32 +1,45 @@
 import { useState, useEffect } from "react";
+import Header from "./components/Header";
+import DayList from "./components/DayList";
+import Footer from "./components/Footer";
 
 function App() {
-  const days = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
-
   const [today, setToday] = useState("");
+  const [date, setDate] = useState("");
+  const [time, setTime] = useState("");
+  const [quote, setQuote] = useState("");
+
+  const days = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+  const quotes = [
+    "Tetap semangat, hari baru peluang baru!",
+    "Jangan menyerah, kerja keras tak pernah sia-sia.",
+    "Waktu adalah aset paling berharga, gunakan dengan bijak.",
+    "Kecil tapi konsisten lebih baik daripada besar tapi berhenti.",
+  ];
 
   useEffect(() => {
     const now = new Date();
     setToday(days[now.getDay()]);
+    setDate(now.toLocaleDateString("id-ID"));
+    setQuote(quotes[Math.floor(Math.random() * quotes.length)]);
+
+    const interval = setInterval(() => {
+      const current = new Date();
+      setTime(current.toLocaleTimeString("id-ID"));
+    }, 1000);
+
+    return () => clearInterval(interval);
   }, []);
 
   return (
     <div
-      style={{ fontFamily: "Arial", textAlign: "center", marginTop: "50px" }}
+      style={{ fontFamily: "Arial", textAlign: "center", marginTop: "20px" }}
     >
-      <h1>📅 Data Hari</h1>
-      <h2>Hari ini: {today}</h2>
-      <h3>Daftar Hari:</h3>
-      <ul style={{ listStyle: "none", padding: 0 }}>
-        {days.map((day, index) => (
-          <li key={index} style={{ margin: "5px 0" }}>
-            {day}{" "}
-            {day === "Sabtu" || day === "Minggu"
-              ? "🌞 (Weekend)"
-              : "💼 (Weekday)"}
-          </li>
-        ))}
-      </ul>
+      <Header today={today} date={date} time={time} />
+      <h3>🌟 Quote Hari Ini:</h3>
+      <p style={{ fontStyle: "italic" }}>{quote}</p>
+      <DayList today={today} days={days} />
+      <Footer />
     </div>
   );
 }
